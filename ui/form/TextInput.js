@@ -1,6 +1,6 @@
-const ansi = require('../../ansi')
-const unic = require('../../unichars')
-const telc = require('../../telchars')
+const ansi = require('../../util/ansi')
+const unic = require('../../util/unichars')
+const telc = require('../../util/telchars')
 
 const FocusElement = require('./FocusElement')
 

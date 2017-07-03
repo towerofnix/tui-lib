@@ -90,6 +90,21 @@ const ansi = {
     return `${ESC}[7m`
   },
 
+  requestCursorPosition() {
+    // Requests the position of the cursor.
+    // Expect a stdin-result '\ESC[l;cR', where l is the line number (1-based),
+    // c is the column number (also 1-based), and R is the literal character
+    // 'R' (decimal code 82).
+
+    return `${ESC}[6n`
+  },
+
+  isANSICommand(buffer, code = null) {
+    return (
+      buffer[0] === 0x1b && buffer[1] === 0x5b &&
+      (code ? buffer[buffer.length - 1] === code : true)
+    )
+  },
 
 
   interpret(text, scrRows, scrCols) {

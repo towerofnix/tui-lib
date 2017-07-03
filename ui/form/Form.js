@@ -1,4 +1,4 @@
-const telc = require('../../telchars')
+const telc = require('../../util/telchars')
 
 const FocusElement = require('./FocusElement')
 
@@ -45,7 +45,7 @@ module.exports = class Form extends FocusElement {
     }
   }
   
-  focus() {
+  focused() {
     this.root.select(this.inputs[this.curIndex])
   }
 }

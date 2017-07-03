@@ -1,5 +1,5 @@
 const EventEmitter = require('events')
-const exception = require('../exception')
+const exception = require('../util/exception')
 
 module.exports = class DisplayElement extends EventEmitter {
   // A general class that handles dealing with screen coordinates, the tree

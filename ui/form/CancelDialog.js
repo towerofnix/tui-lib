@@ -1,4 +1,4 @@
-const telc = require('../../telchars')
+const telc = require('../../util/telchars')
 
 const FocusElement = require('./FocusElement')
 
@@ -47,7 +47,7 @@ module.exports = class ConfirmDialog extends FocusElement {
     this.cancelBtn.y = this.pane.contentH - 2
   }
 
-  focus() {
+  focused() {
     this.root.select(this.cancelBtn)
   }
 

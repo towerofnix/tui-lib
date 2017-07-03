@@ -16,6 +16,8 @@ module.exports = class Flushable {
     this.screenCols = 80
 
     this.ended = false
+    this.paused = false
+    this.requestedFlush = false
 
     this.chunks = []
   }
@@ -25,6 +27,13 @@ module.exports = class Flushable {
   }
 
   flush() {
+    // If we're paused, we don't want to write, but we will keep a note that a
+    // flush was requested for when we unpause.
+    if (this.paused) {
+      this.requestedFlush = true
+      return
+    }
+
     // Don't write if we've ended.
     if (this.ended) {
       return
@@ -53,6 +62,18 @@ module.exports = class Flushable {
     }
 
     this.chunks = []
+  }
+
+  pause() {
+    this.paused = true
+  }
+
+  resume() {
+    this.paused = false
+
+    if (this.requestedFlush) {
+      this.flush()
+    }
   }
 
   end() {

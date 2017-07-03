@@ -1,5 +1,5 @@
-const ansi = require('../../ansi')
-const telc = require('../../telchars')
+const ansi = require('../../util/ansi')
+const telc = require('../../util/telchars')
 
 const FocusElement = require('./FocusElement')
 
@@ -29,7 +29,7 @@ module.exports = class ButtonInput extends FocusElement {
   }
 
   drawTo(writable) {
-    if (this.isSelected) {
+    if (this.isFocused) {
       writable.write(ansi.invert())
     }
 

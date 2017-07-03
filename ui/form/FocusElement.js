@@ -9,19 +9,19 @@ module.exports = class FocusElement extends DisplayElement {
     this.cursorX = 0
     this.cursorY = 0
 
-    this.isSelected = false
+    this.isFocused = false
   }
 
-  focus(socket) {
-    // Do something with socket. Should be overridden in subclasses.
-
-    this.isSelected = true
-  }
-
-  unfocus() {
+  focused() {
     // Should be overridden in subclasses.
 
-    this.isSelected = false
+    this.isFocused = true
+  }
+
+  unfocused() {
+    // Should be overridden in subclasses.
+
+    this.isFocused = false
   }
 
   keyPressed(keyBuf) {

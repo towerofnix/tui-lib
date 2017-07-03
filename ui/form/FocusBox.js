@@ -1,4 +1,4 @@
-const ansi = require('../../ansi')
+const ansi = require('../../util/ansi')
 
 const FocusElement = require('./FocusElement')
 
@@ -19,13 +19,13 @@ module.exports = class FocusBox extends FocusElement {
   }
 
   drawTo(writable) {
-    if (this.isSelected) {
+    if (this.isFocused) {
       writable.write(ansi.invert())
     }
   }
 
   didRenderTo(writable) {
-    if (this.isSelected) {
+    if (this.isFocused) {
       writable.write(ansi.resetAttributes())
     }
   }

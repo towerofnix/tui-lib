@@ -1,5 +1,5 @@
-const ansi = require('../ansi')
-const unic = require('../unichars')
+const ansi = require('../util/ansi')
+const unic = require('../util/unichars')
 
 const DisplayElement = require('./DisplayElement')
 

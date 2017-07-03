@@ -1,6 +1,6 @@
 const iac = require('iac')
 
-const ansi = require('../ansi')
+const ansi = require('../util/ansi')
 
 const DisplayElement = require('./DisplayElement')
 
@@ -10,88 +10,23 @@ module.exports = class Root extends DisplayElement {
   // An element to be used as the root of a UI. Handles lots of UI and
   // socket stuff.
 
-  constructor(socket) {
+  constructor(interfacer) {
     super()
 
-    this.socket = socket
-    this.initTelnetOptions()
+    this.interfacer = interfacer
 
     this.selected = null
 
     this.cursorBlinkOffset = Date.now()
 
-    socket.on('data', buf => this.handleData(buf))
+    interfacer.on('inputData', buf => this.handleData(buf))
   }
 
-  initTelnetOptions() {
-    // Initializes various socket options, using telnet magic.
-
-    // Disables linemode.
-    this.socket.write(Buffer.from([
-      255, 253, 34,  // IAC DO LINEMODE
-      255, 250, 34, 1, 0, 255, 240,  // IAC SB LINEMODE MODE 0 IAC SE
-      255, 251, 1    // IAC WILL ECHO
-    ]))
-
-    // Will SGA. Helps with putty apparently.
-    this.socket.write(Buffer.from([
-      255, 251, 3  // IAC WILL SGA
-    ]))
-
-    this.socket.write(ansi.hideCursor())
-  }
-
-  cleanTelnetOptions() {
-    // Resets the telnet options and magic set in initTelnetOptions.
-
-    this.socket.write(ansi.resetAttributes())
-    this.socket.write(ansi.showCursor())
-  }
-
-  requestTelnetWindowSize() {
-    // See RFC #1073 - Telnet Window Size Option
-
-    return new Promise((res, rej) => {
-      this.socket.write(Buffer.from([
-        255, 253, 31  // IAC WILL NAWS
-      ]))
-
-      this.once('telnetsub', function until(sub) {
-        if (sub[0] !== 31) { // NAWS
-          this.once('telnetsub', until)
-        } else {
-          res({lines: sub[4], cols: sub[2]})
-        }
-      })
-    })
+  render() {
+    this.renderTo(this.interfacer)
   }
 
   handleData(buffer) {
-    if (buffer[0] === 255) {
-      // Telnet IAC (Is A Command) - ignore
-
-      // Split the data into multiple IAC commands if more than one IAC was
-      // sent.
-      const values = Array.from(buffer.values())
-      const commands = []
-      const curCmd = [255]
-      for (let value of values) {
-        if (value === 255) { // IAC
-          commands.push(Array.from(curCmd))
-          curCmd.splice(1, curCmd.length)
-          continue
-        }
-        curCmd.push(value)
-      }
-      commands.push(curCmd)
-
-      for (let command of commands) {
-        this.interpretTelnetCommand(command)
-      }
-
-      return
-    }
-
     if (this.selected) {
       const els = this.selected.directAncestors.concat([this.selected])
       for (let el of els) {
@@ -103,29 +38,6 @@ module.exports = class Root extends DisplayElement {
           el.emit('keypressed', buffer)
         }
       }
-    }
-  }
-
-  interpretTelnetCommand(command) {
-    if (command[0] !== 255) { // IAC
-      // First byte isn't IAC, which means this isn't a command, so do
-      // nothing.
-      return
-    }
-
-    if (command[1] === 251) { // WILL
-      // Do nothing because I'm lazy
-      const willWhat = command[2]
-      //console.log('IAC WILL ' + willWhat)
-    }
-
-    if (command[1] === 250) { // SB
-      this.telnetSub = command.slice(2)
-    }
-
-    if (command[1] === 240) { // SE
-      this.emit('telnetsub', this.telnetSub)
-      this.telnetSub = null
     }
   }
 
@@ -164,11 +76,11 @@ module.exports = class Root extends DisplayElement {
     // element, if there is one.
 
     if (this.selected) {
-      this.selected.unfocus()
+      this.selected.unfocused()
     }
 
     this.selected = el
-    this.selected.focus()
+    this.selected.focused()
 
     this.cursorMoved()
   }

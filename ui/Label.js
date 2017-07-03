@@ -1,4 +1,4 @@
-const ansi = require('../ansi')
+const ansi = require('../util/ansi')
 
 const DisplayElement = require('./DisplayElement')
 
