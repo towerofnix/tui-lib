@@ -1,4 +1,4 @@
-// Useful tlelnet key detection.
+// Useful telnet key detection.
 
 const telchars = {
   isSpace: buf => buf[0] === 0x20,
