@@ -49,17 +49,25 @@ module.exports = class Root extends DisplayElement {
   didRenderTo(writable) {
     // Render the cursor, based on the cursorX and cursorY of the currently
     // selected element.
-    if (
-      this.selected && this.selected.cursorVisible &&
-      (Date.now() - this.cursorBlinkOffset) % 1000 < 500
-    ) {
-      writable.write(ansi.moveCursor(
-        this.selected.absCursorY, this.selected.absCursorX))
-      writable.write(ansi.invert())
-      writable.write('I')
-      writable.write(ansi.resetAttributes())
+    if (this.selected && this.selected.cursorVisible) {
+      if ((Date.now() - this.cursorBlinkOffset) % 1000 < 500) {
+        writable.write(
+          ansi.moveCursor(this.selected.absCursorY, this.selected.absCursorX)
+        )
+        writable.write(ansi.invert())
+        writable.write('I')
+        writable.write(ansi.resetAttributes())
+      }
+
+      writable.write(ansi.showCursor())
+      writable.write(
+        ansi.moveCursor(this.selected.absCursorY, this.selected.absCursorX)
+      )
+    } else {
+      writable.write(ansi.hideCursor())
     }
-    writable.write(ansi.hideCursor())
+
+    if (this.selected && this.selected.cursorVisible) {}
   }
 
   cursorMoved() {
