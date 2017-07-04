@@ -30,19 +30,32 @@ module.exports = class Form extends FocusElement {
       }
 
       if (telc.isTab(keyBuf)) {
-        this.curIndex = (this.curIndex + 1) % this.inputs.length
+        this.nextInput()
       } else {
-        this.curIndex = (this.curIndex - 1)
-        if (this.curIndex < 0) {
-          this.curIndex = (this.inputs.length - 1)
-        }
+        this.previousInput()
       }
-
-      const nextInput = this.inputs[this.curIndex]
-      this.root.select(nextInput)
 
       return false
     }
+  }
+
+  updateSelectedElement() {
+    this.root.select(this.inputs[this.curIndex])
+  }
+
+  previousInput() {
+    this.curIndex = (this.curIndex - 1)
+    if (this.curIndex < 0) {
+      this.curIndex = (this.inputs.length - 1)
+    }
+
+    this.updateSelectedElement()
+  }
+
+  nextInput() {
+    this.curIndex = (this.curIndex + 1) % this.inputs.length
+
+    this.updateSelectedElement()
   }
   
   focused() {

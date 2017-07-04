@@ -3,7 +3,7 @@ const telc = require('../../util/telchars')
 
 const FocusElement = require('./FocusElement')
 
-module.exports = class ButtonInput extends FocusElement {
+module.exports = class Button extends FocusElement {
   // A button.
 
   constructor(text) {
@@ -15,17 +15,9 @@ module.exports = class ButtonInput extends FocusElement {
     this.cursorY = null
   }
 
-  // Setting the text of the button should change the width of the button to
-  // fit the text.
-  //
-  // TODO: Make this happen in fixLayout
-  set text(newText) {
-    this._text = newText
-    this.w = newText.length
-  }
-
-  get text() {
-    return this._text
+  fixLayout() {
+    this.w = this.text.length
+    this.h = 1
   }
 
   drawTo(writable) {

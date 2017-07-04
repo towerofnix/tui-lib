@@ -1,3 +1,5 @@
+const telc = require('../../util/telchars')
+
 const Form = require('./Form')
 
 module.exports = class ListScrollForm extends Form {
@@ -44,7 +46,27 @@ module.exports = class ListScrollForm extends Form {
   }
 
   keyPressed(keyBuf) {
-    super.keyPressed(keyBuf)
+    handleKeyPress: {
+      if (this.layoutType === 'horizontal') {
+        if (telc.isLeft(keyBuf)) {
+          this.previousInput()
+          break handleKeyPress
+        } else if (telc.isRight(keyBuf)) {
+          this.nextInput()
+          break handleKeyPress
+        }
+      } else if (this.layoutType === 'vertical') {
+        if (telc.isUp(keyBuf)) {
+          this.previousInput()
+          break handleKeyPress
+        } else if (telc.isDown(keyBuf)) {
+          this.nextInput()
+          break handleKeyPress
+        }
+      }
+
+      super.keyPressed(keyBuf)
+    }
 
     const sel = this.inputs[this.curIndex]
 
