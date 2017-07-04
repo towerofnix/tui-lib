@@ -43,6 +43,12 @@ const ansi = {
     return `${ESC}[${line + 1};${col + 1}H`
   },
 
+  cleanCursor() {
+    // A combination of codes that generally cleans up the cursor.
+
+    return ansi.resetAttributes() + ansi.showCursor()
+  },
+
   hideCursor() {
     // Makes the cursor invisible.
 

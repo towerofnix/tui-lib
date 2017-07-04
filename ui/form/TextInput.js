@@ -11,6 +11,7 @@ module.exports = class TextInput extends FocusElement {
     super()
 
     this.value = ''
+    this.cursorVisible = true
     this.cursorIndex = 0
     this.scrollChars = 0
   }

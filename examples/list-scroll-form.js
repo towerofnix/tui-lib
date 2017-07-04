@@ -13,6 +13,7 @@ interfacer.getScreenSize().then(size => {
 
   const list = new ListScrollForm()
   root.addChild(list)
+
   list.x = 2
   list.y = 2
   list.w = root.contentW - 4
@@ -23,6 +24,7 @@ interfacer.getScreenSize().then(size => {
     list.addInput(button)
 
     button.on('pressed', () => {
+      process.stdout.write(ansi.cleanCursor())
       process.stdout.write(ansi.clearScreen())
       console.log(item)
       process.exit(0)

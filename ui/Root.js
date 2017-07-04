@@ -50,9 +50,7 @@ module.exports = class Root extends DisplayElement {
     // Render the cursor, based on the cursorX and cursorY of the currently
     // selected element.
     if (
-      this.selected &&
-      typeof this.selected.cursorX === 'number' &&
-      typeof this.selected.cursorY === 'number' &&
+      this.selected && this.selected.cursorVisible &&
       (Date.now() - this.cursorBlinkOffset) % 1000 < 500
     ) {
       writable.write(ansi.moveCursor(
@@ -61,7 +59,7 @@ module.exports = class Root extends DisplayElement {
       writable.write('I')
       writable.write(ansi.resetAttributes())
     }
-    writable.write(ansi.moveCursor(0, 0))
+    writable.write(ansi.hideCursor())
   }
 
   cursorMoved() {

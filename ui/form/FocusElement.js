@@ -6,6 +6,7 @@ module.exports = class FocusElement extends DisplayElement {
   constructor() {
     super()
 
+    this.cursorVisible = false
     this.cursorX = 0
     this.cursorY = 0
 
