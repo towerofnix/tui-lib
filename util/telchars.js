@@ -6,7 +6,7 @@ const compareBufStr = (buf, str) => {
 
 const telchars = {
   isSpace: buf => buf[0] === 0x20,
-  isEnter: buf => buf[0] === 0x0d && buf[1] === 0x00,
+  isEnter: buf => buf[0] === 0x0d,
   isTab: buf => buf[0] === 0x09,
   isBackTab: buf => buf[0] === 0x1b && buf[2] === 0x5A,
   isBackspace: buf => buf[0] === 0x7F,
