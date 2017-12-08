@@ -1,10 +1,15 @@
 // Useful telnet key detection.
 
+const compareBufStr = (buf, str) => {
+  return buf.equals(Buffer.from(str.split('').map(c => c.charCodeAt(0))))
+}
+
 const telchars = {
   isSpace: buf => buf[0] === 0x20,
   isEnter: buf => buf[0] === 0x0d && buf[1] === 0x00,
   isTab: buf => buf[0] === 0x09,
   isBackTab: buf => buf[0] === 0x1b && buf[2] === 0x5A,
+  isBackspace: buf => buf[0] === 0x7F,
 
   // isEscape is hard because it's just send as ESC (the ANSI escape code),
   // so we need to make sure that the escape code is all on its own
@@ -25,6 +30,11 @@ const telchars = {
   isDown: buf => buf[0] === 0x1b && buf[2] === 0x42,
   isRight: buf => buf[0] === 0x1b && buf[2] === 0x43,
   isLeft: buf => buf[0] === 0x1b && buf[2] === 0x44,
+
+  isShiftUp: buf => buf[0] === 0x1b && compareBufStr(buf.slice(1), '[1;2A'),
+  isShiftDown: buf => buf[0] === 0x1b && compareBufStr(buf.slice(1), '[1;2B'),
+  isShiftRight: buf => buf[0] === 0x1b && compareBufStr(buf.slice(1), '[1;2C'),
+  isShiftLeft: buf => buf[0] === 0x1b && compareBufStr(buf.slice(1), '[1;2D'),
 }
 
 module.exports = telchars
