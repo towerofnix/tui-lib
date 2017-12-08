@@ -96,6 +96,12 @@ const ansi = {
     return `${ESC}[7m`
   },
 
+  invertOff() {
+    // Un-inverts the foreground and backgrund colors.
+
+    return `${ESC}[27m`
+  },
+
   requestCursorPosition() {
     // Requests the position of the cursor.
     // Expect a stdin-result '\ESC[l;cR', where l is the line number (1-based),
