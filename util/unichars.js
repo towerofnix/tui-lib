@@ -13,5 +13,18 @@ module.exports = {
   /* ┐ */ BOX_CORNER_TR: '\u2510',
   /* └ */ BOX_CORNER_BL: '\u2514',
   /* ┘ */ BOX_CORNER_BR: '\u2518',
-  /* ┌ */ BOX_CORNER_TL: '\u250C'
+  /* ┌ */ BOX_CORNER_TL: '\u250C',
+
+  /* ← */ ARROW_LEFT: '\u2190',
+  /* ↑ */ ARROW_UP: '\u2191',
+  /* → */ ARROW_RIGHT: '\u2192',
+  /* ↓ */ ARROW_DOWN: '\u2193',
+  /* ↔ */ ARROW_LEFT_RIGHT: '\u2194',
+  /* ↕ */ ARROW_UP_DOWN: '\u2195',
+  /* ⇐ */ ARROW_LEFT_DOUBLE: '\u21D0',
+  /* ⇑ */ ARROW_UP_DOUBLE: '\u21D1',
+  /* ⇒ */ ARROW_RIGHT_DOUBLE: '\u21D2',
+  /* ⇓ */ ARROW_DOWN_DOUBLE: '\u21D3',
+  /* ⇔ */ ARROW_LEFT_RIGHT_DOUBLE: '\u21D4',
+  /* ⇕ */ ARROW_UP_DOWN_DOUBLE: '\u21D5'
 }
