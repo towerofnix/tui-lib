@@ -82,6 +82,16 @@ module.exports = class TextInput extends FocusElement {
     this.keepCursorInRange()
   }
 
+  setValue(value) {
+    this.value = value
+    this.moveToEnd()
+  }
+
+  moveToEnd() {
+    this.cursorIndex = this.value.length
+    this.keepCursorInRange()
+  }
+
   keepCursorInRange() {
     // Keep the cursor inside or at the end of the input value.
 
@@ -95,18 +105,18 @@ module.exports = class TextInput extends FocusElement {
 
     // Scroll right, if the cursor is past the right edge of where text is
     // displayed.
-    if (this.cursorIndex - this.scrollChars > this.w - 3) {
+    while (this.cursorIndex - this.scrollChars > this.w - 3) {
       this.scrollChars++
     }
 
     // Scroll left, if the cursor is behind the left edge of where text is
     // displayed.
-    if (this.cursorIndex - this.scrollChars < 0) {
+    while (this.cursorIndex - this.scrollChars < 0) {
       this.scrollChars--
     }
 
     // Scroll left, if we can see past the end of the text.
-    if (this.scrollChars > 0 && (
+    while (this.scrollChars > 0 && (
       this.scrollChars + this.w - 3 > this.value.length)
     ) {
       this.scrollChars--
