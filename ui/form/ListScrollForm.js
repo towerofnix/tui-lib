@@ -106,6 +106,12 @@ module.exports = class ListScrollForm extends Form {
     this.fixLayout()
   }
 
+  firstInput() {
+    this.scrollItems = 0
+
+    super.firstInput()
+  }
+
   getItemPos(item) {
     // Gets the position of the item in an unscrolled view.
 
