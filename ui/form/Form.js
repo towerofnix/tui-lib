@@ -8,6 +8,7 @@ module.exports = class Form extends FocusElement {
 
     this.inputs = []
     this.curIndex = 0
+    this.captureTab = true
   }
 
   addInput(input, asChild = true) {
@@ -22,7 +23,26 @@ module.exports = class Form extends FocusElement {
     }
   }
 
+  removeInput(input, asChild = true) {
+    // Removes the given input from the form's input list. If the optional
+    // argument asChild is false, it won't try to removeChild the input.
+
+    if (this.inputs.includes(input)) {
+      this.inputs.splice(this.inputs.indexOf(input), 1)
+
+      if (asChild) {
+        this.removeChild(input)
+      }
+    }
+  }
+
   keyPressed(keyBuf) {
+    // Don't do anything if captureTab is set to false. This is handy for
+    // nested forms.
+    if (!this.captureTab) {
+      return
+    }
+
     if (telc.isTab(keyBuf) || telc.isBackTab(keyBuf)) {
       // No inputs to tab through, so do nothing.
       if (this.inputs.length < 2) {
@@ -40,7 +60,9 @@ module.exports = class Form extends FocusElement {
   }
 
   updateSelectedElement() {
-    this.root.select(this.inputs[this.curIndex])
+    if (this.root.select) {
+      this.root.select(this.inputs[this.curIndex])
+    }
   }
 
   previousInput() {
@@ -57,8 +79,16 @@ module.exports = class Form extends FocusElement {
 
     this.updateSelectedElement()
   }
-  
+
+  firstInput() {
+    this.curIndex = 0
+
+    this.updateSelectedElement()
+  }
+
   focused() {
-    this.root.select(this.inputs[this.curIndex])
+    if (this.root.select) {
+      this.root.select(this.inputs[this.curIndex])
+    }
   }
 }
