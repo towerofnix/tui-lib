@@ -20,11 +20,17 @@ module.exports = class ListScrollForm extends Form {
     // visible and we won't bother iterating over them.
     const itemsPastScroll = this.inputs.slice(this.scrollItems)
 
+    // We do need to hide them, though.
+    const itemsBeforeScroll = this.inputs.slice(0, this.scrollItems)
+    for (const item of itemsBeforeScroll) {
+      item.visible = false
+    }
+
     // This variable stores how far along the respective axis (as defined by
     // posProp) the next element should be.
     let nextPos = 0
 
-    for (let item of itemsPastScroll) {
+    for (const item of itemsPastScroll) {
       item[this.posProp] = nextPos
       nextPos += item[this.sizeProp]
 
