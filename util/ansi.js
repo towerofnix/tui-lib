@@ -137,6 +137,12 @@ const ansi = {
 
     for (let charI = 0; charI < text.length; charI++) {
       if (text[charI] === ESC) {
+        if (false) {
+          chars[getCursorIndex()] = {char: '%', attributes: []}
+          cursorCol++
+          continue
+        }
+
         charI++
 
         if (text[charI] !== '[') {
@@ -213,9 +219,39 @@ const ansi = {
 
         // SGR - Select Graphic Rendition
         if (text[charI] === 'm') {
-          for (let arg of args) {
+          const removeAttribute = attr => {
+            if (attributes.includes(attr)) {
+              attributes.splice(attributes.indexOf(attr), 1)
+            }
+          }
+
+          for (const arg of args) {
             if (arg === '0') {
               attributes.splice(0, attributes.length)
+            } else if (arg === '22') { // Neither bold nor faint
+              removeAttribute('1')
+              removeAttribute('2')
+            } else if (arg === '23') { // Neither italic nor Fraktur
+              removeAttribute('3')
+              removeAttribute('20')
+            } else if (arg === '24') { // Not underlined
+              removeAttribute('4')
+            } else if (arg === '25') { // Blink off
+              removeAttribute('5')
+            } else if (arg === '27') { // Inverse off
+              removeAttribute('7')
+            } else if (arg === '28') { // Conceal off
+              removeAttribute('8')
+            } else if (arg === '29') { // Not crossed out
+              removeAttribute('9')
+            } else if (arg === '39') { // Default foreground
+              for (let i = 0; i < 10; i++) {
+                removeAttribute('3' + i)
+              }
+            } else if (arg === '49') { // Default background
+              for (let i = 0; i < 10; i++) {
+                removeAttribute('4' + i)
+              }
             } else {
               attributes.push(arg)
             }
@@ -261,7 +297,7 @@ const ansi = {
 
     //let n = 1 // debug
 
-    for (let char of chars) {
+    for (const char of chars) {
       const newAttributes = (
         char.attributes.filter(attr => !(lastChar.attributes.includes(attr)))
       )
