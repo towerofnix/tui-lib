@@ -129,6 +129,7 @@ const ansi = {
 
     const chars = new Array(scrRows * scrCols).fill(blank)
 
+    let showCursor = true
     let cursorRow = 1
     let cursorCol = 1
     const attributes = []
@@ -143,6 +144,12 @@ const ansi = {
         }
 
         charI++
+
+        // Selective control sequences (look them up) - we can just skip the
+        // question mark.
+        if (text[charI] === '?') {
+          charI++
+        }
 
         const args = []
         let val = ''
@@ -163,6 +170,13 @@ const ansi = {
         if (text[charI] === 'H') {
           cursorRow = args[0]
           cursorCol = args[1]
+        }
+
+        // SM - Set Mode
+        if (text[charI] === 'h') {
+          if (args[0] === '25') {
+            showCursor = true
+          }
         }
 
         // ED - Erase Display (clearScreen)
@@ -187,6 +201,13 @@ const ansi = {
             for (let i = getCursorIndex(); i < chars.length; i++) {
               chars[i] = blank
             }
+          }
+        }
+
+        // RM - Reset Mode
+        if (text[charI] === 'l') {
+          if (args[0] === '25') {
+            showCursor = false
           }
         }
 
