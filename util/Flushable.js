@@ -11,6 +11,10 @@ module.exports = class Flushable {
     // doesn't *quite* work but should drastically decrease write size?
     this.shouldCompress = shouldCompress
 
+    // Whether or not to show compression statistics (original written size
+    // and ANSI-interpreted compressed size) in the output of flush.
+    this.shouldShowCompressionStatistics = false
+
     // Update these if you plan on using the ANSI compressor!
     this.screenLines = 24
     this.screenCols = 80
@@ -82,15 +86,15 @@ module.exports = class Flushable {
 
   compress(toWrite) {
     // TODO: customize screen size
-    const screen = ansi.interpret(toWrite, this.screenLines, this.screenCols)
+    let screen = ansi.interpret(toWrite, this.screenLines, this.screenCols)
 
-    /*
-    const pcSaved = Math.round(100 - (100 / toWrite.length * screen.length))
-    console.log(
-      '\x1b[1A' +
-      `${toWrite.length} - ${screen.length} ${pcSaved}% saved   `
-    )
-    */
+    if (this.shouldShowCompressionStatistics) {
+      const pcSaved = Math.round(100 - (100 / toWrite.length * screen.length))
+      screen += (
+        '\x1b[1A (ANSI-interpret: ' +
+        `${toWrite.length} -> ${screen.length} ${pcSaved}% saved)`
+      )
+    }
 
     return screen
   }
