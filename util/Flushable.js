@@ -86,13 +86,13 @@ module.exports = class Flushable {
 
   compress(toWrite) {
     // TODO: customize screen size
-    let { newChars, lastChar, screen } = ansi.interpret(
-      toWrite, this.screenLines, this.screenCols,
-      this.lastFrameChars, this.lastFrameLastChar
+    const output = ansi.interpret(
+      toWrite, this.screenLines, this.screenCols, this.lastFrame
     )
 
-    this.lastFrameChars = newChars
-    this.lastFrameLastChar = lastChar
+    let { screen } = output
+
+    this.lastFrame = output
 
     if (this.shouldShowCompressionStatistics) {
       const pcSaved = Math.round(100 - (100 / toWrite.length * screen.length))
@@ -100,7 +100,7 @@ module.exports = class Flushable {
         '\x1b[H\x1b[0m(ANSI-interpret: ' +
         `${toWrite.length} -> ${screen.length} ${pcSaved}% saved)  `
       )
-      this.lastFrameLastChar.attributes = []
+      this.lastFrame.oldLastChar.attributes = []
     }
 
     return screen

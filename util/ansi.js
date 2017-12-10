@@ -119,7 +119,10 @@ const ansi = {
   },
 
 
-  interpret(text, scrRows, scrCols, oldChars = null, lastChar = null) {
+  interpret(text, scrRows, scrCols, {
+    oldChars = null, oldLastChar = null,
+    oldCursorRow = 0, oldCursorCol = 0
+  } = {}) {
     // Interprets the given ansi code, more or less.
 
     const blank = {
@@ -360,7 +363,7 @@ const ansi = {
 
     // Character concatenation -----------
 
-    lastChar = lastChar || {
+    let lastChar = oldLastChar || {
       char: '',
       attributes: []
     }
@@ -397,9 +400,17 @@ const ansi = {
       }
     }
 
+    // If anything changed *or* the cursor moved, we need to put it back where
+    // it was before:
+    if (result.length || cursorCol !== oldCursorCol || cursorRow !== oldCursorRow) {
+      result.push(ansi.moveCursor(cursorRow, cursorCol))
+    }
+
     return {
-      newChars: newChars.slice(),
-      lastChar: Object.assign({}, lastChar),
+      oldChars: newChars.slice(),
+      oldCursorRow: cursorRow,
+      oldCursorCol: cursorCol,
+      oldLastChar: Object.assign({}, lastChar),
       screen: result.join('')
     }
   }
