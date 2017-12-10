@@ -119,7 +119,7 @@ const ansi = {
   },
 
 
-  interpret(text, scrRows, scrCols) {
+  interpret(text, scrRows, scrCols, oldChars = null, lastChar = null) {
     // Interprets the given ansi code, more or less.
 
     const blank = {
@@ -285,56 +285,123 @@ const ansi = {
       }
     }
 
+    // SPOooooOOoky diffing! -------------
+    //
+    // - Search for series of differences. This means a collection of characters
+    //   which have different text or attribute properties.
+    //
+    // - Figure out how to print these differences. Move the cursor to the beginning
+    //   character's row/column, then print the differences.
+
+    const newChars = chars
+
+    const differences = []
+
+    if (oldChars === null) {
+      differences.push({i: 0, chars: [...newChars]})
+    } else {
+      const charsEqual = (oldChar, newChar) => {
+        // TODO: Check attributes.
+
+        if (oldChar.char !== newChar.char) {
+          return false
+        }
+
+        let oldAttrs = oldChar.attributes.slice()
+        let newAttrs = newChar.attributes.slice()
+
+        while (newAttrs.length) {
+          const attr = newAttrs.shift()
+          if (oldAttrs.includes(attr)) {
+            oldAttrs.splice(oldAttrs.indexOf(attr), 1)
+          } else {
+            return false
+          }
+        }
+
+        oldAttrs = oldChar.attributes.slice()
+        newAttrs = newChar.attributes.slice()
+
+        while (oldAttrs.length) {
+          const attr = oldAttrs.shift()
+          if (newAttrs.includes(attr)) {
+            newAttrs.splice(newAttrs.indexOf(attr), 1)
+          } else {
+            return false
+          }
+        }
+
+        return true
+      }
+
+      let curDiff = null
+
+      for (let i = 0; i < chars.length; i++) {
+        const oldChar = oldChars[i]
+        const newChar = newChars[i]
+
+        // TODO: Some sort of "distance" before we should clear curDiff?
+        // It may take *less* characters if this diff and the next are merged
+        // (entering a single character is smaller than the length of the code
+        // used to move past that character). Probably not very significant of
+        // an impact, though.
+        if (charsEqual(oldChar, newChar)) {
+          curDiff = null
+        } else {
+          if (curDiff === null) {
+            curDiff = {i, chars: []}
+            differences.push(curDiff)
+          }
+
+          curDiff.chars.push(newChar)
+        }
+      }
+    }
+
     // Character concatenation -----------
 
-    // Move to the top left of the screen initially.
-    const result = [ ansi.moveCursorRaw(1, 1) ]
-
-    let lastChar = {
+    lastChar = lastChar || {
       char: '',
       attributes: []
     }
 
-    //let n = 1 // debug
+    const result = []
 
-    for (const char of chars) {
-      const newAttributes = (
-        char.attributes.filter(attr => !(lastChar.attributes.includes(attr)))
-      )
+    for (const diff of differences) {
+      const col = diff.i % scrCols
+      const row = (diff.i - col) / scrCols
+      result.push(ansi.moveCursor(row, col))
 
-      const removedAttributes = (
-        lastChar.attributes.filter(attr => !(char.attributes.includes(attr)))
-      )
-
-      // The only way to practically remove any character attribute is to
-      // reset all of its attributes and then re-add its existing attributes.
-      // If we do that, there's no need to add new attributes.
-      if (removedAttributes.length) {
-        // console.log(
-        //   `removed some attributes "${char.char}"`, removedAttributes
-        // )
-        result.push(ansi.resetAttributes())
-        result.push(`${ESC}[${char.attributes.join(';')}m`)
-      } else if (newAttributes.length) {
-        result.push(`${ESC}[${newAttributes.join(';')}m`)
-      }
-
-      // debug
-      /*
-      if (char.char !== ' ') {
-        console.log(
-          `#2-char ${char.char}; ${chars.indexOf(char) - n} inbetween`
+      for (const char of diff.chars) {
+        const newAttributes = (
+          char.attributes.filter(attr => !(lastChar.attributes.includes(attr)))
         )
-        n = chars.indexOf(char)
+
+        const removedAttributes = (
+          lastChar.attributes.filter(attr => !(char.attributes.includes(attr)))
+        )
+
+        // The only way to practically remove any character attribute is to
+        // reset all of its attributes and then re-add its existing attributes.
+        // If we do that, there's no need to add new attributes.
+        if (removedAttributes.length) {
+          result.push(ansi.resetAttributes())
+          result.push(`${ESC}[${char.attributes.join(';')}m`)
+        } else if (newAttributes.length) {
+          result.push(`${ESC}[${newAttributes.join(';')}m`)
+        }
+
+        result.push(char.char)
+
+        lastChar = char
       }
-      */
-
-      result.push(char.char)
-
-      lastChar = char
     }
 
-    return result.join('')
+    return {
+      newChars: newChars.slice(),
+      lastChar: Object.assign({}, lastChar),
+      screen: result.join('')
+    }
   }
 }
 
