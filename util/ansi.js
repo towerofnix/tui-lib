@@ -121,7 +121,7 @@ const ansi = {
 
   interpret(text, scrRows, scrCols, {
     oldChars = null, oldLastChar = null,
-    oldCursorRow = 0, oldCursorCol = 0
+    oldCursorRow = 0, oldCursorCol = 0, oldShowCursor = true
   } = {}) {
     // Interprets the given ansi code, more or less.
 
@@ -406,10 +406,19 @@ const ansi = {
       result.push(ansi.moveCursor(cursorRow, cursorCol))
     }
 
+    // If the cursor is visible and wasn't before, or vice versa, we need to
+    // show that:
+    if (showCursor && !oldShowCursor) {
+      result.push(ansi.showCursor())
+    } else if (!showCursor && oldShowCursor) {
+      result.push(ansi.hideCursor())
+    }
+
     return {
       oldChars: newChars.slice(),
       oldCursorRow: cursorRow,
       oldCursorCol: cursorCol,
+      oldShowCursor: showCursor,
       oldLastChar: Object.assign({}, lastChar),
       screen: result.join('')
     }
