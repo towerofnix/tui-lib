@@ -1,6 +1,6 @@
-# ui-lib
+# tui-lib
 
-ui-lib[rary]
+t[erminal] ui-lib[rary]
 
 A handy but incomprehensibly (un)useful DOM-like library for writing visual terminal programs.
 
