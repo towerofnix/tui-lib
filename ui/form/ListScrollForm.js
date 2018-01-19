@@ -106,10 +106,10 @@ module.exports = class ListScrollForm extends Form {
     this.fixLayout()
   }
 
-  firstInput() {
+  firstInput(...args) {
     this.scrollItems = 0
 
-    super.firstInput()
+    super.firstInput(...args)
   }
 
   getItemPos(item) {

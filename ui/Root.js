@@ -90,4 +90,11 @@ module.exports = class Root extends DisplayElement {
 
     this.cursorMoved()
   }
+
+  isChildOrSelfSelected(el) {
+    if (!this.selected) return false
+    if (this.selected === el) return true
+    if (this.selected.directAncestors.includes(el)) return true
+    return false
+  }
 }

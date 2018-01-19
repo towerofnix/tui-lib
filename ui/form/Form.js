@@ -80,15 +80,17 @@ module.exports = class Form extends FocusElement {
     this.updateSelectedElement()
   }
 
-  firstInput() {
+  firstInput(selectForm = true) {
     this.curIndex = 0
 
-    this.updateSelectedElement()
+    if (selectForm || (
+      this.root.isChildOrSelfSelected && this.root.isChildOrSelfSelected(this)
+    )) {
+      this.updateSelectedElement()
+    }
   }
 
   focused() {
-    if (this.root.select) {
-      this.root.select(this.inputs[this.curIndex])
-    }
+    this.updateSelectedElement()
   }
 }
