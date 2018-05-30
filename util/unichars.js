@@ -15,6 +15,10 @@ module.exports = {
   /* ┘ */ BOX_CORNER_BR: '\u2518',
   /* ┌ */ BOX_CORNER_TL: '\u250C',
 
+  /* ░ */ BOX_LIGHT_SHADE: '\u2591',
+  /* ▒ */ BOX_MEDIUM_SHADE: '\u2592',
+  /* ▓ */ BOX_DARK_SHADE: '\u2593',
+
   /* ← */ ARROW_LEFT: '\u2190',
   /* ↑ */ ARROW_UP: '\u2191',
   /* → */ ARROW_RIGHT: '\u2192',
