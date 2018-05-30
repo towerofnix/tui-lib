@@ -1,4 +1,5 @@
 const ansi = require('./ansi')
+const unic = require('./unichars')
 
 module.exports = class Flushable {
   // A writable that can be used to collect chunks of data before writing
@@ -95,11 +96,17 @@ module.exports = class Flushable {
     this.lastFrame = output
 
     if (this.shouldShowCompressionStatistics) {
-      const pcSaved = Math.round(100 - (100 / toWrite.length * screen.length))
-      screen += (
-        '\x1b[H\x1b[0m(ANSI-interpret: ' +
-        `${toWrite.length} -> ${screen.length} ${pcSaved}% saved)  `
-      )
+      let msg = this.lastInterpretMessage
+      if (screen.length > 0 || !this.lastInterpretMessage) {
+        const pcSaved = Math.round(1000 - (1000 / toWrite.length * screen.length)) / 10
+        const kbSaved = Math.round((toWrite.length - screen.length) / 100) / 10
+        msg = this.lastInterpretMessage = (
+          '(ANSI-interpret: ' +
+          `${toWrite.length} -> ${screen.length} ${pcSaved}% / ${kbSaved} KB saved)`
+        )
+      }
+      screen += '\x1b[H\x1b[0m'
+      screen += msg + unic.BOX_H_DOUBLE.repeat(this.screenCols - msg.length)
       this.lastFrame.oldLastChar.attributes = []
     }
 
