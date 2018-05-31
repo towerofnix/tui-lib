@@ -35,6 +35,8 @@ const telchars = {
   isShiftDown: buf => buf[0] === 0x1b && compareBufStr(buf.slice(1), '[1;2B'),
   isShiftRight: buf => buf[0] === 0x1b && compareBufStr(buf.slice(1), '[1;2C'),
   isShiftLeft: buf => buf[0] === 0x1b && compareBufStr(buf.slice(1), '[1;2D'),
+
+  isCaselessLetter: (buf, letter) => compareBufStr(buf, letter.toLowerCase()) || compareBufStr(buf, letter.toUpperCase()),
 }
 
 module.exports = telchars
