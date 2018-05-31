@@ -54,7 +54,7 @@ module.exports = class TelnetInterfacer extends EventEmitter {
     inputLoop: while (true) {
       const data = await waitForData(this.socket)
 
-      for (let command of this.parseTelnetCommands(data)) {
+      for (const command of this.parseTelnetCommands(data)) {
         // WILL NAWS
         if (command[1] === 251 && command[2] === 31) {
           didWillNAWS = true
@@ -87,7 +87,7 @@ module.exports = class TelnetInterfacer extends EventEmitter {
       const values = Array.from(buffer.values())
       const commands = []
       const curCmd = [255]
-      for (let value of values) {
+      for (const value of values) {
         if (value === 255) { // IAC
           commands.push(Array.from(curCmd))
           curCmd.splice(1, curCmd.length)

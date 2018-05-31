@@ -64,7 +64,7 @@ module.exports = class DisplayElement extends EventEmitter {
     // Runs fixLayout on this as well as all children.
 
     this.fixLayout()
-    for (let child of this.children) {
+    for (const child of this.children) {
       child.fixAllLayout()
     }
   }
@@ -72,7 +72,7 @@ module.exports = class DisplayElement extends EventEmitter {
   drawChildrenTo(writable) {
     // Draws all of the children to a writable.
 
-    for (let child of this.children) {
+    for (const child of this.children) {
       child.renderTo(writable)
     }
   }

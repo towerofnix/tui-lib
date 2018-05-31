@@ -5,7 +5,7 @@ module.exports = class HorizontalBox extends DisplayElement {
 
   fixLayout() {
     let nextX = 0
-    for (let child of this.children) {
+    for (const child of this.children) {
       child.x = nextX
       nextX = child.right + 1
     }

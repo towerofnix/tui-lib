@@ -5,7 +5,7 @@ module.exports = function count(arr) {
 
   const map = new Map()
 
-  for (let item of arr) {
+  for (const item of arr) {
     if (map.has(item)) {
       map.set(item, map.get(item) + 1)
     } else {

@@ -19,7 +19,7 @@ interfacer.getScreenSize().then(size => {
   list.w = root.contentW - 4
   list.h = root.contentH - 4
 
-  for (let item of ['Foo', 'Bar', 'Baz']) {
+  for (const item of ['Foo', 'Bar', 'Baz']) {
     const button = new Button(item)
     list.addInput(button)
 

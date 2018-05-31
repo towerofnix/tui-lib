@@ -7,7 +7,7 @@ module.exports = function wrap(str, width) {
 
   let curLine = words[0]
 
-  for (let word of words.slice(1)) {
+  for (const word of words.slice(1)) {
     if (curLine.length + word.length > width) {
       lines.push(curLine)
       curLine = word

@@ -29,7 +29,7 @@ module.exports = class Root extends DisplayElement {
   handleData(buffer) {
     if (this.selected) {
       const els = this.selected.directAncestors.concat([this.selected])
-      for (let el of els) {
+      for (const el of els) {
         if (el instanceof FocusElement) {
           const shouldBreak = (el.keyPressed(buffer) === false)
           if (shouldBreak) {

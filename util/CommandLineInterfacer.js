@@ -63,7 +63,7 @@ module.exports = class CommandLineInterfacer extends EventEmitter {
     const options = []
     let curOption = ''
     let commandCode = null
-    for (let val of buffer.slice(2)) {
+    for (const val of buffer.slice(2)) {
       if (48 <= val && val <= 57) { // 0124356789
         curOption = curOption.concat(val - 48)
       } else {
