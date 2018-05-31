@@ -118,6 +118,20 @@ module.exports = class DisplayElement extends EventEmitter {
     this.y = Math.round((this.parent.contentH - this.h) / 2)
   }
 
+  fillParent() {
+    // Utility function to fill this element in its parent. Must be called
+    // only when it has a parent.
+
+    if (this.parent === null) {
+      throw new Error('Cannot fill parent when parent is null')
+    }
+
+    this.x = 0
+    this.y = 0
+    this.w = this.parent.contentW
+    this.h = this.parent.contentH
+  }
+
   get root() {
     let el = this
     while (el.parent) {
