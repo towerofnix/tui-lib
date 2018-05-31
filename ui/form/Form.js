@@ -59,6 +59,10 @@ module.exports = class Form extends FocusElement {
     }
   }
 
+  get selectable() {
+    return this.inputs.some(inp => inp.selectable)
+  }
+
   updateSelectedElement() {
     if (this.root.select) {
       this.root.select(this.inputs[this.curIndex])
@@ -66,22 +70,34 @@ module.exports = class Form extends FocusElement {
   }
 
   previousInput() {
-    this.curIndex = (this.curIndex - 1)
-    if (this.curIndex < 0) {
-      this.curIndex = (this.inputs.length - 1)
-    }
+    // TODO: Forms currently assume there is at least one selectable input,
+    // but this isn't necessarily always the case.
+    do {
+      this.curIndex = (this.curIndex - 1)
+      if (this.curIndex < 0) {
+        this.curIndex = (this.inputs.length - 1)
+      }
+    } while (!this.inputs[this.curIndex].selectable)
 
     this.updateSelectedElement()
   }
 
   nextInput() {
-    this.curIndex = (this.curIndex + 1) % this.inputs.length
+    // TODO: See previousInput
+    do {
+      this.curIndex = (this.curIndex + 1) % this.inputs.length
+    } while (!this.inputs[this.curIndex].selectable)
 
     this.updateSelectedElement()
   }
 
   firstInput(selectForm = true) {
     this.curIndex = 0
+
+    // TODO: See previousInput
+    if (!this.inputs[this.curIndex].selectable) {
+      this.nextInput()
+    }
 
     if (selectForm || (
       this.root.isChildOrSelfSelected && this.root.isChildOrSelfSelected(this)
