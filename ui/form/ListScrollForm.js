@@ -74,6 +74,10 @@ module.exports = class ListScrollForm extends Form {
       super.keyPressed(keyBuf)
     }
 
+    this.scrollSelectedElementIntoView()
+  }
+
+  scrollSelectedElementIntoView() {
     const sel = this.inputs[this.curIndex]
 
     // If the item is ahead of our view (either to the right of or below),
