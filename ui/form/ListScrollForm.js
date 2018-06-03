@@ -71,6 +71,14 @@ module.exports = class ListScrollForm extends Form {
         }
       }
 
+      if (telc.isPageUp(keyBuf)) {
+        this.previousPage()
+        break handleKeyPress
+      } else if (telc.isPageDown(keyBuf)) {
+        this.nextPage()
+        break handleKeyPress
+      }
+
       super.keyPressed(keyBuf)
     }
 
@@ -114,6 +122,26 @@ module.exports = class ListScrollForm extends Form {
     this.scrollItems = 0
 
     super.firstInput(...args)
+  }
+
+  previousPage() {
+    this.curIndex -= this.h
+    this.scrollItems -= this.h
+    if (this.curIndex < 0) {
+      this.curIndex = 0
+      this.scrollItems = 0
+    }
+    this.updateSelectedElement()
+  }
+
+  nextPage() {
+    this.curIndex += this.h
+    this.scrollItems += this.h
+    if (this.curIndex >= this.inputs.length) {
+      this.curIndex = this.inputs.length - 1
+      this.scrollItems = Math.max(0, this.inputs.length - this.h)
+    }
+    this.updateSelectedElement()
   }
 
   getItemPos(item) {
