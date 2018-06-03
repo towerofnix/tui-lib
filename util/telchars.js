@@ -31,10 +31,13 @@ const telchars = {
   isRight: buf => buf[0] === 0x1b && buf[2] === 0x43,
   isLeft: buf => buf[0] === 0x1b && buf[2] === 0x44,
 
-  isShiftUp: buf => buf[0] === 0x1b && compareBufStr(buf.slice(1), '[1;2A'),
-  isShiftDown: buf => buf[0] === 0x1b && compareBufStr(buf.slice(1), '[1;2B'),
-  isShiftRight: buf => buf[0] === 0x1b && compareBufStr(buf.slice(1), '[1;2C'),
-  isShiftLeft: buf => buf[0] === 0x1b && compareBufStr(buf.slice(1), '[1;2D'),
+  isShiftUp: buf => compareBufStr(buf, '\x1b[1;2A'),
+  isShiftDown: buf => compareBufStr(buf, '\x1b[1;2B'),
+  isShiftRight: buf => compareBufStr(buf, '\x1b[1;2C'),
+  isShiftLeft: buf => compareBufStr(buf, '\x1b[1;2D'),
+
+  isPageUp: buf => compareBufStr(buf, '\x1b[5~'),
+  isPageDown: buf => compareBufStr(buf, '\x1b[6~'),
 
   isCaselessLetter: (buf, letter) => compareBufStr(buf, letter.toLowerCase()) || compareBufStr(buf, letter.toUpperCase()),
 }
