@@ -3,17 +3,22 @@ const waitForData = require('./waitForData')
 const ansi = require('./ansi')
 
 module.exports = class CommandLineInterfacer extends EventEmitter {
-  constructor(inStream = process.stdin, outStream = process.stdout) {
+  constructor(inStream = process.stdin, outStream = process.stdout, proc = process) {
     super()
 
     this.inStream = inStream
     this.outStream = outStream
+    this.process = proc
 
     inStream.on('data', buffer => {
       this.emit('inputData', buffer)
     })
 
     inStream.setRawMode(true)
+
+    proc.on('SIGWINCH', async buffer => {
+      this.emit('resize', await this.getScreenSize())
+    })
   }
 
   async getScreenSize() {

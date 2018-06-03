@@ -16,15 +16,22 @@ module.exports = class Flushable {
     // and ANSI-interpreted compressed size) in the output of flush.
     this.shouldShowCompressionStatistics = false
 
-    // Update these if you plan on using the ANSI compressor!
+    // Use resizeScreen if you plan on using the ANSI compressor!
     this.screenLines = 24
     this.screenCols = 80
+    this.lastFrame = undefined
 
     this.ended = false
     this.paused = false
     this.requestedFlush = false
 
     this.chunks = []
+  }
+
+  resizeScreen({lines, cols}) {
+    this.screenLines = lines
+    this.screenCols = cols
+    this.lastFrame = undefined
   }
 
   write(what) {
