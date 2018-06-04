@@ -96,19 +96,7 @@ module.exports = class ListScrollForm extends Form {
     // we should move the view so that the item is the farthest right (of all
     // the visible items).
     if (this.getItemPos(sel) > this.formEdge + this.scrollSize) {
-      // We can decide how many items to scroll past by moving forward until
-      // our item's far edge is visible.
-
-      let i
-      let edge = this.formEdge
-
-      for (i = 0; i < this.inputs.length; i++) {
-        if (this.getItemPos(sel) <= edge) break
-        edge += this.inputs[i][this.sizeProp]
-      }
-
-      // Now that we have the right index to scroll to, apply it!
-      this.scrollItems = i
+      this.scrollElementIntoEndOfView(sel)
     }
 
     // Adjusting the number of scroll items is much simpler to deal with if
@@ -143,9 +131,28 @@ module.exports = class ListScrollForm extends Form {
     this.scrollItems += this.h
     if (this.curIndex >= this.inputs.length) {
       this.curIndex = this.inputs.length - 1
-      this.scrollItems = Math.max(0, this.inputs.length - this.h)
+      this.scrollToEnd()
     }
     this.updateSelectedElement()
+  }
+
+  scrollElementIntoEndOfView(element) {
+    // We can decide how many items to scroll past by moving forward until
+    // the item's far edge is visible.
+    let i
+    let edge = this.formEdge
+    for (i = 0; i < this.inputs.length; i++) {
+      if (this.getItemPos(element) <= edge) break
+      edge += this.inputs[i][this.sizeProp]
+    }
+
+    // Now that we have the right index to scroll to, apply it!
+    this.scrollItems = i
+  }
+
+  scrollToEnd() {
+    this.scrollElementIntoEndOfView(this.inputs[this.inputs.length - 1])
+    this.fixLayout()
   }
 
   getItemPos(item) {
