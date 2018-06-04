@@ -40,6 +40,7 @@ const telchars = {
   isPageDown: buf => compareBufStr(buf, '\x1b[6~'),
 
   isCaselessLetter: (buf, letter) => compareBufStr(buf, letter.toLowerCase()) || compareBufStr(buf, letter.toUpperCase()),
+  isCharacter: (buf, char) => compareBufStr(buf, char),
 }
 
 module.exports = telchars
