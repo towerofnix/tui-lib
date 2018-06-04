@@ -52,37 +52,41 @@ module.exports = class ListScrollForm extends Form {
   }
 
   keyPressed(keyBuf) {
+    let ret
+
     handleKeyPress: {
       if (this.layoutType === 'horizontal') {
         if (telc.isLeft(keyBuf)) {
           this.previousInput()
-          break handleKeyPress
+          ret = false; break handleKeyPress
         } else if (telc.isRight(keyBuf)) {
           this.nextInput()
-          break handleKeyPress
+          ret = false; break handleKeyPress
         }
       } else if (this.layoutType === 'vertical') {
         if (telc.isUp(keyBuf)) {
           this.previousInput()
-          break handleKeyPress
+          ret = false; break handleKeyPress
         } else if (telc.isDown(keyBuf)) {
           this.nextInput()
-          break handleKeyPress
+          ret = false; break handleKeyPress
         }
       }
 
       if (telc.isPageUp(keyBuf)) {
         this.previousPage()
-        break handleKeyPress
+        ret = false; break handleKeyPress
       } else if (telc.isPageDown(keyBuf)) {
         this.nextPage()
-        break handleKeyPress
+        ret = false; break handleKeyPress
       }
 
-      super.keyPressed(keyBuf)
+      ret = super.keyPressed(keyBuf)
     }
 
     this.scrollSelectedElementIntoView()
+
+    return ret
   }
 
   scrollSelectedElementIntoView() {
