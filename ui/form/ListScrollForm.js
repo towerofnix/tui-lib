@@ -150,6 +150,11 @@ module.exports = class ListScrollForm extends Form {
     this.scrollItems = i
   }
 
+  scrollToBeginning() {
+    this.scrollItems = 0
+    this.fixLayout()
+  }
+
   scrollToEnd() {
     this.scrollElementIntoEndOfView(this.inputs[this.inputs.length - 1])
     this.fixLayout()
