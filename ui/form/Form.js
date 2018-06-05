@@ -36,6 +36,13 @@ module.exports = class Form extends FocusElement {
     }
   }
 
+  selectInput(input) {
+    if (this.inputs.includes(input)) {
+      this.curIndex = this.inputs.indexOf(input)
+      this.updateSelectedElement()
+    }
+  }
+
   keyPressed(keyBuf) {
     // Don't do anything if captureTab is set to false. This is handy for
     // nested forms.
